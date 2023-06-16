@@ -39,7 +39,7 @@ configurations.create("includeToJar")
 dependencies {
     val fgDepManager = project.extensions[DependencyManagementExtension.EXTENSION_NAME] as DependencyManagementExtension
 
-    add("includeToJar", kotlin("stdlib"))
+    implementation("com.github.kotatsu-rtm.kotatsulib:KotatsuLib-mc1_12_2:0.0.1-SNAPSHOT")
 
     add("minecraft", "net.minecraftforge:forge:1.12.2-14.23.5.2860")
 
@@ -109,6 +109,5 @@ tasks {
 
     withType<Jar> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from(configurations.getByName("includeToJar").copy().apply { isCanBeResolved = true }.map { if (it.isDirectory) it else zipTree(it) })
     }
 }
