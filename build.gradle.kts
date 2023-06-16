@@ -4,7 +4,7 @@ import net.minecraftforge.gradle.userdev.DependencyManagementExtension
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.8.22"
 }
 
 buildscript {
@@ -76,7 +76,10 @@ tasks {
     }
 
     compileKotlin {
-        doFirst { source = fileTree(tmpSrc) }
+        doFirst {
+            sourceSets.main.get().kotlin.setSrcDirs(tmpSrc.toPath())
+        }
+
         destinationDirectory.set(File(buildDir, "classes/java/main"))
 
         dependsOn("cloneSource")
