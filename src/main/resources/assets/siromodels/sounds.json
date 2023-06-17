@@ -1,0 +1,12 @@
+{
+  "machine.door.error": {
+    "subtitle": "@modId@.subtitle.machine.door.error",
+    "sounds": [
+      {
+        "name": "@modId@:machine/door/error2",
+        "attenuation_distance": 20,
+        "preload": true
+      }
+    ]
+  }
+}
