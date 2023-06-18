@@ -13,7 +13,7 @@
   "useCustomColor": "false",
   "buttonTexture": "siromodels:textures/button/machine/door_controller.png",
   "model": {
-    "modelFile": "siromodels:models/machine/door_controller.obj",
+    "modelFile": "machine/door_controller.obj",
     "rendererPath": "siromodels:scripts/MachineRenderer.js",
     "textures": [
       ["default", "siromodels:textures/machine/door.png", ""]
