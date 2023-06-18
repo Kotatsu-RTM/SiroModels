@@ -1,0 +1,20 @@
+{
+  "name": "light_type1_2m",
+  "tags": "Siro light",
+  "ornamentType": "Lamp",
+
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "MEDIUM",
+  "offset": [0.0, 0.0, 0.0],
+
+  "useCustomColor": "false",
+  "buttonTexture": "siromodels:textures/button/machine/door_end_right.png",
+  "model": {
+    "modelFile": "ornament/light.obj",
+    "rendererPath": "siromodels:scripts/OrnamentRenderer.js",
+    "textures": [
+      ["default", "siromodels:textures/ornament/light.png", ""]
+    ]
+  }
+}

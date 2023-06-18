@@ -1,0 +1,25 @@
+{
+  "name": "door_wall_2m",
+  "tags": "Siro platform home door",
+  "machineType": "Gate",
+
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "MEDIUM",
+  "offset": [-0.5, 0.0, 0.0],
+
+  "serverScriptPath": "siromodels:scripts/Server.js",
+
+  "useCustomColor": "false",
+  "buttonTexture": "siromodels:textures/button/machine/door_wall_2m.png",
+  "model": {
+    "modelFile": "machine/door_wall_2m.obj",
+    "rendererPath": "siromodels:scripts/MachineRenderer.js",
+    "textures": [
+      ["default", "siromodels:textures/machine/door.png", ""]
+    ]
+  },
+
+  "sound_OnActivate": "",
+  "sound_Running": ""
+}
