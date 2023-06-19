@@ -48,10 +48,14 @@ class MovableDoorTileEntity: TileEntityCrossingGate() {
         super.readFromNBT(nbt)
     }
 
-    override fun writeToNBT(nbt: NBTTagCompound): NBTTagCompound = nbt.apply {
-        setBoolean("detectError", detectError)
-        setFloat("doorOpeningLeft", doorOpeningLeft)
-        setFloat("doorOpeningRight", doorOpeningRight)
+    override fun writeToNBT(nbt: NBTTagCompound): NBTTagCompound {
+        nbt.apply {
+            setBoolean("detectError", detectError)
+            setFloat("doorOpeningLeft", doorOpeningLeft)
+            setFloat("doorOpeningRight", doorOpeningRight)
+        }
+
+        return super.writeToNBT(nbt)
     }
 
     override fun invalidate() {
