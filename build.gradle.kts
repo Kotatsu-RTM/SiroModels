@@ -88,6 +88,8 @@ tasks {
     processResources {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+        exclude(listOf("**/*.blend", "**/*.blend1", "**/*.psd", "**/*.ai"))
+
         filesMatching("assets/siromodels/model_jsons/**") {
             name = name.replace(".json", "")
         }
