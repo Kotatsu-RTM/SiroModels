@@ -12,7 +12,9 @@ import dev.siro256.rtmpack.siromodels.renderer.LightRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.ControllerRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.CrewDoorRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.WallRenderer
+import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.ModelObject
+import jp.ngt.rtm.render.OrnamentPartsRenderer
 import jp.ngt.rtm.render.PartsRenderer
 
 @Suppress("unused")
@@ -23,7 +25,7 @@ object RendererRouter {
             "door_end_right", "door_end_left", "door_middle_right_front", "door_middle_left_front" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(MovableDoorRenderer())
+                    renderer.deepCopy(MachinePartsRenderer::class.java, MovableDoorRenderer())
                 )
                 DoorModel(modelObject)
             }
@@ -31,7 +33,7 @@ object RendererRouter {
             "door_crew" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(CrewDoorRenderer())
+                    renderer.deepCopy(MachinePartsRenderer::class.java, CrewDoorRenderer())
                 )
                 CrewDoorModel(modelObject)
             }
@@ -39,7 +41,7 @@ object RendererRouter {
             "door_controller" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(ControllerRenderer())
+                    renderer.deepCopy(MachinePartsRenderer::class.java, ControllerRenderer())
                 )
                 ControllerModel(modelObject)
             }
@@ -47,7 +49,7 @@ object RendererRouter {
             "door_wall_1m", "door_wall_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(WallRenderer())
+                    renderer.deepCopy(MachinePartsRenderer::class.java, WallRenderer())
                 )
                 WallModel(modelObject)
             }
@@ -55,7 +57,7 @@ object RendererRouter {
             "light_type1_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(LightRenderer())
+                    renderer.deepCopy(OrnamentPartsRenderer::class.java, LightRenderer())
                 )
                 LightModel(modelObject)
             }

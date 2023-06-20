@@ -1,9 +1,9 @@
 package dev.siro256.rtmpack.siromodels
 
-fun <T> Any.deepCopy(newInstance: T): T {
-    if (this::class.java.superclass != null) this.deepCopy(newInstance)
+fun <T> Any.deepCopy(clazz: Class<*>, newInstance: T): T {
+    if (clazz.superclass != null) deepCopy(clazz.superclass, newInstance)
 
-    this::class.java.declaredFields.forEach {
+    clazz.declaredFields.forEach {
         try {
             it.isAccessible = true
             it.set(newInstance, it.get(this))

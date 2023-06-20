@@ -3,6 +3,7 @@ package dev.siro256.rtmpack.siromodels.renderer.base
 import dev.siro256.rtmpack.siromodels.CustomModelObject
 import dev.siro256.rtmpack.siromodels.deepCopy
 import jp.ngt.rtm.render.MachinePartsRenderer
+import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GLAllocation
@@ -27,7 +28,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
     @Suppress("DuplicatedCode")
     final override fun render(tileEntity: TileEntity?, pass: RenderPass, tickProgression: Float) {
         if (currentTexture == -1) {
-            modelSet.modelObj = modelSet.modelObj.deepCopy(CustomModelObject())
+            modelSet.modelObj = modelSet.modelObj.deepCopy(ModelObject::class.java, CustomModelObject())
             currentTexture = 0
         }
 
