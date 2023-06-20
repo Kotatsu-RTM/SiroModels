@@ -24,6 +24,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
 
     final override var currentTexture = -1
 
+    @Suppress("DuplicatedCode")
     final override fun render(tileEntity: TileEntity?, pass: RenderPass, tickProgression: Float) {
         if (currentTexture == -1) {
             modelSet.modelObj = modelSet.modelObj.deepCopy(CustomModelObject())
