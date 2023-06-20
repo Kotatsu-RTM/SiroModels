@@ -1,7 +1,7 @@
 package dev.siro256.rtmpack.siromodels.renderer
 
-import dev.siro256.rtmpack.siromodels.model.ModelRegistry
+import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.model.Model
 
 object RenderDataManager {
-    val models = HashMap<String, ModelRegistry>()
+    val models = HashMap<String, Model>()
 }

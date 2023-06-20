@@ -25,7 +25,7 @@ object RendererRouter {
                     modelObject,
                     deepCopy(MachinePartsRenderer::class.java, renderer, MovableDoorRenderer())
                 )
-                DoorModel(renderer)
+                DoorModel(modelObject)
             }
 
             "door_crew" -> {
@@ -33,7 +33,7 @@ object RendererRouter {
                     modelObject,
                     deepCopy(MachinePartsRenderer::class.java, renderer, CrewDoorRenderer())
                 )
-                CrewDoorModel(renderer)
+                CrewDoorModel(modelObject)
             }
 
             "door_controller" -> {
@@ -41,7 +41,7 @@ object RendererRouter {
                     modelObject,
                     deepCopy(MachinePartsRenderer::class.java, renderer, ControllerRenderer())
                 )
-                ControllerModel(renderer)
+                ControllerModel(modelObject)
             }
 
             "door_wall_1m", "door_wall_2m" -> {
@@ -49,7 +49,7 @@ object RendererRouter {
                     modelObject,
                     deepCopy(MachinePartsRenderer::class.java, renderer, WallRenderer())
                 )
-                WallModel(renderer)
+                WallModel(modelObject)
             }
 
             "light_type1_2m" -> {
@@ -57,7 +57,7 @@ object RendererRouter {
                     modelObject,
                     deepCopy(MachinePartsRenderer::class.java, renderer, LightRenderer())
                 )
-                LightModel(renderer)
+                LightModel(modelObject)
             }
 
             else -> {
