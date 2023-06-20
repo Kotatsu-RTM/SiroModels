@@ -1,115 +1,174 @@
 package dev.siro256.rtmpack.siromodels.renderer.platformdoor
 
+import com.github.kotatsu_rtm.kotatsulib.api.gl.VBO
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.bindVBO
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelView
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.bindVBO
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.render
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
 import dev.siro256.rtmpack.siromodels.block.platformdoor.MovableDoorTileEntity
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.model.platformdoor.DoorModel
-import jp.ngt.ngtlib.renderer.GLHelper
-import jp.ngt.rtm.render.MachinePartsRenderer
+import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
-import org.lwjgl.opengl.GL11
+import org.joml.Matrix4f
+import org.joml.Matrix4fStack
+import org.joml.Vector2f
 
-class MovableDoorRenderer : MachinePartsRenderer() {
+class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as DoorModel }
     private var nanoTime = 0L
 
-    override fun render(tileEntity: TileEntity?, pass: RenderPass, tickProgression: Float) {
+    override fun render(
+        tileEntity: TileEntity?,
+        pass: RenderPass,
+        tickProgression: Float,
+        modelViewMatrix: Matrix4f,
+        projectionMatrix: Matrix4f,
+        lightMapCoords: Vector2f,
+    ) {
         if (pass != RenderPass.NORMAL) return
-
         if (tileEntity !is MovableDoorTileEntity?) return
 
         nanoTime = System.nanoTime()
 
-        model.base.render(this)
-        model.body.render(this)
-        model.controlPanel.render(this)
+        val modelViewStack = Matrix4fStack(4).apply { set(modelViewMatrix) }
+        val texturedShader =
+            TexturedShader
+                .updateProjection(projectionMatrix)
+                .setMaterial(currentMatId)
+                .setTexture(currentTexture)
+                .bindVBO(model.vbo)
+                .setLightMapCoords(lightMapCoords)
+        val texturedWithColorShader =
+            TexturedWithColorShader
+                .updateProjection(projectionMatrix)
+                .setMaterial(currentMatId)
+                .setTexture(currentTexture)
+                .bindVBO(model.vbo)
 
-        model.maintenancePanelLeft.render(this)
-        model.maintenancePanelRight.render(this)
+        texturedShader
+            .setModelView(modelViewStack)
+            .useModel(model.base)
+            .render()
+            .useModel(model.body)
+            .render()
+            .useModel(model.controlPanel)
+            .render()
+            .useModel(model.maintenancePanelLeft)
+            .render()
+            .useModel(model.maintenancePanelRight)
+            .render()
 
-        drawDoor(tileEntity)
-        drawDirection(tileEntity)
-        drawNearIndicator(tileEntity)
+        drawDoor(tileEntity, modelViewStack, texturedShader)
+        drawDirection(tileEntity, modelViewStack, texturedWithColorShader)
+        drawNearIndicator(tileEntity, modelViewStack, texturedShader, texturedWithColorShader)
     }
 
-    private fun drawDoor(tileEntity: MovableDoorTileEntity?) {
+    private fun drawDoor(
+        tileEntity: MovableDoorTileEntity?,
+        modelViewMatrix: Matrix4fStack,
+        texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
+    ) {
         val leftMovement = if (tileEntity == null) -1.5F else -1.5F * tileEntity.doorOpeningLeft
         val rightMovement = if (tileEntity == null) 1.5F else 1.5F * tileEntity.doorOpeningRight
 
-        GL11.glPushMatrix()
-        GL11.glTranslatef(leftMovement, 0.0F, 0.0F)
-        model.doorLeft.render(this)
-        GL11.glPopMatrix()
+        modelViewMatrix.stack {
+            modelViewMatrix.translate(leftMovement, 0.0F, 0.0F)
+            texturedShader
+                .setModelView(modelViewMatrix)
+                .useModel(model.doorLeft)
+                .render()
+        }
 
-        GL11.glPushMatrix()
-        GL11.glTranslatef(rightMovement, 0.0F, 0.0F)
-        model.doorRight.render(this)
-        GL11.glPopMatrix()
+        modelViewMatrix.stack {
+            modelViewMatrix.translate(rightMovement, 0.0F, 0.0F)
+            texturedShader
+                .setModelView(modelViewMatrix)
+                .useModel(model.doorRight)
+                .render()
+        }
     }
 
-    private fun drawDirection(tileEntity: MovableDoorTileEntity?) {
+    private fun drawDirection(
+        tileEntity: MovableDoorTileEntity?,
+        modelViewMatrix: Matrix4fStack,
+        texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Nothing, Nothing, Nothing>,
+    ) {
         if (tileEntity is MovableDoorTileEntity && tileEntity.detectError) {
-            GLHelper.setColor(0xc0c0c0, 255)
-
-            model.directionLamp.lamp1.render(this)
-            model.directionLamp.lamp3.render(this)
-            model.directionLamp.lamp4.render(this)
-            model.directionLamp.lamp6.render(this)
-
             val selector = nanoTime / 200_000_000 % 2 == 0L
 
-            if (selector) {
-                model.directionLamp.lamp2.render(this)
-            } else {
-                model.directionLamp.lamp5.render(this)
-            }
-
-            GLHelper.setColor(0xe3172b, 255)
-            GLHelper.setBrightness(0xffff)
-
-            if (!selector) {
-                model.directionLamp.lamp2.render(this)
-            } else {
-                model.directionLamp.lamp5.render(this)
-            }
-
-            //reset
-            GLHelper.setColor(0xffffff, 255)
-            GLHelper.setBrightness(0x0)
+            texturedWithColorShader
+                .setModelView(modelViewMatrix)
+                .setColor(0xc0c0c0ffu)
+                .useModel(model.lamp1)
+                .render()
+                .useModel(model.lamp3)
+                .render()
+                .useModel(model.lamp4)
+                .render()
+                .useModel(model.lamp6)
+                .render()
+                .useModel(if (selector) model.lamp2 else model.lamp5)
+                .render()
+                .setColor(0xe3172bffu)
+                .useModel(if (!selector) model.lamp2 else model.lamp5)
+                .render()
 
             return
         }
 
         var position = (nanoTime / 200_000_000 % 6).toInt()
         val direction = Direction.values()[(nanoTime / 5_000_000_000 % 3).toInt()]
-        GLHelper.setColor(0xc0c0c0, 255)
 
-        for (i in 0 until 6) {
-            if (i == 3 && direction != Direction.OFF) {
-                GLHelper.setColor(0xff8c00, 255)
-                GLHelper.setBrightness(0xffff)
-            }
+        var shader = texturedWithColorShader.setModelView(modelViewMatrix).setColor(0xc0c0c0ffu)
 
-            val selector = if (direction == Direction.RIGHT) 5 - position else position
-            model.directionLamp.list[selector].render(this)
-
-            if (position == 5) position = 0 else position++
+        for (i in 0 until 3) {
+            shader.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
+            if (position == 5) position = 0 else ++position
         }
 
-        //reset
-        GLHelper.setColor(0xffffff, 255)
-        GLHelper.setBrightness(0x0)
+        if (direction != Direction.OFF)
+            shader = texturedWithColorShader.setModelView(modelViewMatrix).setColor(0xff8c00ffu)
+
+        for (i in 0 until 3) {
+            shader.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
+            if (position == 5) position = 0 else ++position
+        }
     }
 
-    private fun drawNearIndicator(tileEntity: MovableDoorTileEntity?) {
+    private fun drawNearIndicator(
+        tileEntity: MovableDoorTileEntity?,
+        modelViewMatrix: Matrix4fStack,
+        texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
+        texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Nothing, Nothing, Nothing>,
+    ) {
         val isLighting = nanoTime / 1_000_000_000 % 2 == 0L
 
-        if (isLighting && (tileEntity != null && !tileEntity.detectError))
-            GLHelper.setBrightness(0x9999)
-
-        model.nearIndicator.render(this)
-
-        GLHelper.setBrightness(0x0)
+        if (isLighting && (tileEntity != null && !tileEntity.detectError)) {
+            texturedWithColorShader
+                .setModelView(modelViewMatrix)
+                .setColor(0xffffffffu)
+                .useModel(model.nearIndicator)
+                .render()
+        } else {
+            texturedShader
+                .setModelView(modelViewMatrix)
+                .useModel(model.nearIndicator)
+                .render()
+        }
     }
 
     private enum class Direction {
