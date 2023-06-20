@@ -1,5 +1,6 @@
 package dev.siro256.rtmpack.siromodels.router
 
+import dev.siro256.rtmpack.siromodels.deepCopy
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.model.platformdoor.ControllerModel
 import dev.siro256.rtmpack.siromodels.model.platformdoor.CrewDoorModel
@@ -11,7 +12,6 @@ import dev.siro256.rtmpack.siromodels.renderer.LightRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.ControllerRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.CrewDoorRenderer
 import dev.siro256.rtmpack.siromodels.renderer.platformdoor.WallRenderer
-import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.PartsRenderer
 
@@ -23,7 +23,7 @@ object RendererRouter {
             "door_end_right", "door_end_left", "door_middle_right_front", "door_middle_left_front" -> {
                 replaceRenderer(
                     modelObject,
-                    deepCopy(MachinePartsRenderer::class.java, renderer, MovableDoorRenderer())
+                    renderer.deepCopy(MovableDoorRenderer())
                 )
                 DoorModel(modelObject)
             }
@@ -31,7 +31,7 @@ object RendererRouter {
             "door_crew" -> {
                 replaceRenderer(
                     modelObject,
-                    deepCopy(MachinePartsRenderer::class.java, renderer, CrewDoorRenderer())
+                    renderer.deepCopy(CrewDoorRenderer())
                 )
                 CrewDoorModel(modelObject)
             }
@@ -39,7 +39,7 @@ object RendererRouter {
             "door_controller" -> {
                 replaceRenderer(
                     modelObject,
-                    deepCopy(MachinePartsRenderer::class.java, renderer, ControllerRenderer())
+                    renderer.deepCopy(ControllerRenderer())
                 )
                 ControllerModel(modelObject)
             }
@@ -47,7 +47,7 @@ object RendererRouter {
             "door_wall_1m", "door_wall_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    deepCopy(MachinePartsRenderer::class.java, renderer, WallRenderer())
+                    renderer.deepCopy(WallRenderer())
                 )
                 WallModel(modelObject)
             }
@@ -55,7 +55,7 @@ object RendererRouter {
             "light_type1_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    deepCopy(MachinePartsRenderer::class.java, renderer, LightRenderer())
+                    renderer.deepCopy(LightRenderer())
                 )
                 LightModel(modelObject)
             }
@@ -73,20 +73,4 @@ object RendererRouter {
                 .apply { isAccessible = true }
                 .set(modelObject, newRenderer)
     }
-
-    private fun <T> deepCopy(clazz: Class<*>, instance: Any, newInstance: T): T {
-        if (clazz.superclass != null) deepCopy(clazz.superclass, instance, newInstance)
-
-        clazz.declaredFields.forEach {
-            try {
-                it.isAccessible = true
-                it.set(newInstance, it.get(instance))
-            } catch (_: Exception) {
-                //Do nothing
-            }
-        }
-
-        return newInstance
-    }
-
 }
