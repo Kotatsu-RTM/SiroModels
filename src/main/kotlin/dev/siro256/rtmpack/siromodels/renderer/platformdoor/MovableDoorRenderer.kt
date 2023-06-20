@@ -73,7 +73,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
             .render()
 
         drawDoor(tileEntity, modelViewStack, texturedShader)
-        drawDirection(tileEntity, modelViewStack, texturedWithColorShader)
+        drawDirection(tileEntity, modelViewStack, texturedShader, texturedWithColorShader)
         drawNearIndicator(tileEntity, modelViewStack, texturedShader, texturedWithColorShader)
     }
 
@@ -105,14 +105,14 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawDirection(
         tileEntity: MovableDoorTileEntity?,
         modelViewMatrix: Matrix4fStack,
+        texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
         texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Nothing, Nothing, Nothing>,
     ) {
         if (tileEntity is MovableDoorTileEntity && tileEntity.detectError) {
             val selector = nanoTime / 200_000_000 % 2 == 0L
 
-            texturedWithColorShader
+            texturedShader
                 .setModelView(modelViewMatrix)
-                .setColor(0xc0c0c0ffu)
                 .useModel(model.lamp1)
                 .render()
                 .useModel(model.lamp3)
@@ -123,6 +123,9 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
                 .render()
                 .useModel(if (selector) model.lamp2 else model.lamp5)
                 .render()
+
+            texturedWithColorShader
+                .setModelView(modelViewMatrix)
                 .setColor(0xe3172bffu)
                 .useModel(if (!selector) model.lamp2 else model.lamp5)
                 .render()
@@ -133,18 +136,22 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         var position = (nanoTime / 200_000_000 % 6).toInt()
         val direction = Direction.values()[(nanoTime / 5_000_000_000 % 3).toInt()]
 
-        var shader = texturedWithColorShader.setModelView(modelViewMatrix).setColor(0xc0c0c0ffu)
+        val textured = texturedShader.setModelView(modelViewMatrix)
+        val texturedWithColor = texturedWithColorShader.setModelView(modelViewMatrix).setColor(0xff8c00ffu)
 
         for (i in 0 until 3) {
-            shader.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
+            textured.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
             if (position == 5) position = 0 else ++position
         }
 
-        if (direction != Direction.OFF)
-            shader = texturedWithColorShader.setModelView(modelViewMatrix).setColor(0xff8c00ffu)
-
         for (i in 0 until 3) {
-            shader.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
+            if (direction == Direction.OFF) {
+                textured.useModel(model.lamps[position]).render()
+            } else {
+                texturedWithColor
+                    .useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position])
+                    .render()
+            }
             if (position == 5) position = 0 else ++position
         }
     }

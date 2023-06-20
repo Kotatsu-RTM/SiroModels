@@ -1,13 +1,13 @@
 package dev.siro256.rtmpack.siromodels.renderer
 
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.bindVBO
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelView
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.bindVBO
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.render
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomOrnamentPartsRenderer
 import jp.ngt.rtm.block.tileentity.TileEntityFluorescent
@@ -76,13 +76,13 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
             }
         }
 
-        TexturedShader
+        TexturedWithColorShader
             .updateProjection(projectionMatrix)
             .setMaterial(currentMatId)
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
-            .setLightMapCoords(lightMapCoords)
             .setModelView(modelViewMatrix)
+            .setColor(0xffffffffu)
             .useModel(model.body)
             .render()
             .useModel(model.light)
