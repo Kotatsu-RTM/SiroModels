@@ -1,9 +1,9 @@
 package dev.siro256.rtmpack.siromodels.model.platformdoor
 
-import dev.siro256.rtmpack.siromodels.model.ModelRegistry
-import jp.ngt.rtm.render.PartsRenderer
+import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.model.Model
+import jp.ngt.rtm.render.ModelObject
 
-class WallModel(renderer: PartsRenderer<*, *>) : ModelRegistry(renderer) {
-    val base = registerParts("base_1", "base_2", "base_3")
-    val body = registerParts("body")
+class WallModel(modelObject: ModelObject) : Model(modelObject.model.groupObjects) {
+    val base by lazy { generateDrawGroup("base_1", "base_2", "base_3") }
+    val body by lazy { generateDrawGroup("body") }
 }

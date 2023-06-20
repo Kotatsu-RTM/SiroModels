@@ -1,9 +1,9 @@
 package dev.siro256.rtmpack.siromodels.model.ornament
 
-import dev.siro256.rtmpack.siromodels.model.ModelRegistry
-import jp.ngt.rtm.render.PartsRenderer
+import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.model.Model
+import jp.ngt.rtm.render.ModelObject
 
-class LightModel(renderer: PartsRenderer<*, *>) : ModelRegistry(renderer) {
-    val body = registerParts("body")
-    val light = registerParts("light")
+class LightModel(modelObject: ModelObject) : Model(modelObject.model.groupObjects) {
+    val body by lazy { generateDrawGroup("body") }
+    val light by lazy { generateDrawGroup("light") }
 }
