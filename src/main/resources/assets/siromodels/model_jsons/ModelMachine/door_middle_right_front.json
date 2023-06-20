@@ -3,6 +3,8 @@
   "tags": "Siro platform home door",
   "machineType": "Gate",
 
+  "synchronousLoading": true,
+
   "smoothing": true,
   "doCulling": true,
   "accuracy": "MEDIUM",

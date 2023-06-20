@@ -3,6 +3,8 @@
   "tags": "Siro light",
   "ornamentType": "Lamp",
 
+  "synchronousLoading": true,
+
   "smoothing": true,
   "doCulling": true,
   "accuracy": "MEDIUM",
