@@ -3,7 +3,7 @@ package dev.siro256.rtmpack.siromodels.model.platformdoor
 import dev.siro256.rtmpack.siromodels.model.ModelRegistry
 import jp.ngt.rtm.render.PartsRenderer
 
-class CrewDoorModel(renderer: PartsRenderer<*, *>): ModelRegistry(renderer) {
+class CrewDoorModel(renderer: PartsRenderer<*, *>) : ModelRegistry(renderer) {
     val base = registerParts("base_1", "base_2")
     val post = registerParts("post_left", "post_right")
     val door = registerParts("door")

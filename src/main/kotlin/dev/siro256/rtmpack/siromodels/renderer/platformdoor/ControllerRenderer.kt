@@ -7,7 +7,7 @@ import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 
-class ControllerRenderer: MachinePartsRenderer() {
+class ControllerRenderer : MachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as ControllerModel }
 
     override fun render(tileEntity: TileEntity?, pass: RenderPass, tickProgression: Float) {

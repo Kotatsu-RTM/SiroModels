@@ -9,7 +9,7 @@ import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 import org.lwjgl.opengl.GL11
 
-class MovableDoorRenderer: MachinePartsRenderer() {
+class MovableDoorRenderer : MachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as DoorModel }
     private var nanoTime = 0L
 

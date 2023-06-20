@@ -27,6 +27,7 @@ object RendererRouter {
                 )
                 DoorModel(renderer)
             }
+
             "door_crew" -> {
                 replaceRenderer(
                     modelObject,
@@ -34,6 +35,7 @@ object RendererRouter {
                 )
                 CrewDoorModel(renderer)
             }
+
             "door_controller" -> {
                 replaceRenderer(
                     modelObject,
@@ -41,6 +43,7 @@ object RendererRouter {
                 )
                 ControllerModel(renderer)
             }
+
             "door_wall_1m", "door_wall_2m" -> {
                 replaceRenderer(
                     modelObject,
@@ -48,6 +51,7 @@ object RendererRouter {
                 )
                 WallModel(renderer)
             }
+
             "light_type1_2m" -> {
                 replaceRenderer(
                     modelObject,
@@ -55,17 +59,21 @@ object RendererRouter {
                 )
                 LightModel(renderer)
             }
-            else -> throw IllegalStateException("Model ${renderer.modelName} isn't handled")
+
+            else -> {
+                throw IllegalStateException("Model ${renderer.modelName} isn't handled")
+            }
         }
     }
 
-    private inline fun <reified T: PartsRenderer<*, *>> replaceRenderer(modelObject: ModelObject, newRenderer: T) {
+    private inline fun <reified T : PartsRenderer<*, *>> replaceRenderer(modelObject: ModelObject, newRenderer: T) {
         if (modelObject.renderer !is T)
             modelObject::class.java
                 .getDeclaredField("renderer")
                 .apply { isAccessible = true }
                 .set(modelObject, newRenderer)
     }
+
     private fun <T> deepCopy(clazz: Class<*>, instance: Any, newInstance: T): T {
         if (clazz.superclass != null) deepCopy(clazz.superclass, instance, newInstance)
 

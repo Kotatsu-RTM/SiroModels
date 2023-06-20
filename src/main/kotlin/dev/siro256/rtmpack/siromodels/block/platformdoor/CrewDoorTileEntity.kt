@@ -6,7 +6,7 @@ import net.minecraft.network.NetworkManager
 import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.util.math.AxisAlignedBB
 
-class CrewDoorTileEntity: TileEntityCrossingGate() {
+class CrewDoorTileEntity : TileEntityCrossingGate() {
     private val renderAABB by lazy { AxisAlignedBB(pos).grow(20.0) }
 
     var doorOpening = 1.0F
@@ -47,10 +47,8 @@ class CrewDoorTileEntity: TileEntityCrossingGate() {
     }
 
     private fun serverProcess() {
-
     }
 
     private fun clientProcess() {
-
     }
 }

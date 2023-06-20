@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
-object MovableDoorBlock: BlockCrossingGate() {
+object MovableDoorBlock : BlockCrossingGate() {
     init {
         registryName = ResourceLocation(Values.MOD_ID, "platform_door_movable")
     }
@@ -34,7 +34,7 @@ object MovableDoorBlock: BlockCrossingGate() {
         entityBox: AxisAlignedBB,
         collidingBoxes: MutableList<AxisAlignedBB>,
         entity: Entity?,
-        isActualState: Boolean
+        isActualState: Boolean,
     ) {
         listOf(
             AxisAlignedBB(-2.0, 0.0, 0.0, 3.0, 1.35, 1.0)

@@ -17,24 +17,36 @@ object ServerRouter {
     @JvmStatic
     fun onUpdate(entity: TileEntityMachineBase) {
         when (entity.resourceState.resourceName.removePrefix("!SiroModels_")) {
-            "door_end_right", "door_end_left", "door_middle_right_front", "door_middle_left_front" ->
+            "door_end_right", "door_end_left", "door_middle_right_front", "door_middle_left_front" -> {
                 replaceTileEntity(entity, MovableDoorBlock)
-            "door_crew" -> replaceTileEntity(entity, CrewDoorBlock)
-            "door_controller" -> replaceTileEntity(entity, ControllerBlock)
-            "door_wall_1m", "door_wall_2m" -> replaceTileEntity(entity, WallBlock)
+            }
+
+            "door_crew" -> {
+                replaceTileEntity(entity, CrewDoorBlock)
+            }
+
+            "door_controller" -> {
+                replaceTileEntity(entity, ControllerBlock)
+            }
+
+            "door_wall_1m", "door_wall_2m" -> {
+                replaceTileEntity(entity, WallBlock)
+            }
         }
     }
 
     fun onUpdate(entity: EntityTrainBase) {
         when (entity.resourceState.resourceName.removePrefix("!SiroModels_")) {
-            "test" -> replaceTrain(entity, EntityTrainElectricCar(entity.world))
+            "test" -> {
+                replaceTrain(entity, EntityTrainElectricCar(entity.world))
+            }
         }
     }
 
-    private inline fun <reified T: BlockContainer> replaceTileEntity(
+    private inline fun <reified T : BlockContainer> replaceTileEntity(
         entity: TileEntityCustom,
         newBlock: T,
-        state: IBlockState = newBlock.defaultState
+        state: IBlockState = newBlock.defaultState,
     ) {
         val world = entity.world
         val pos = entity.pos
@@ -42,7 +54,7 @@ object ServerRouter {
         if (world.getBlockState(pos).block::class !is T) {
             val tileEntity = newBlock.createTileEntity(world, state)?.apply {
                 readFromNBT(entity.writeToNBT(entity.serializeNBT()))
-            }?: return
+            } ?: return
 
             world.removeTileEntity(pos)
             world.setBlockState(pos, state)
@@ -50,7 +62,7 @@ object ServerRouter {
         }
     }
 
-    private inline fun <reified T: EntityTrainBase> replaceTrain(entity: EntityCustom, newEntity: T) {
+    private inline fun <reified T : EntityTrainBase> replaceTrain(entity: EntityCustom, newEntity: T) {
         if (entity !is T) {
             val world = entity.world
 

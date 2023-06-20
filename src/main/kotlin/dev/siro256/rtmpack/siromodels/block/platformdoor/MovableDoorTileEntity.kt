@@ -11,7 +11,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.util.SoundCategory
 import net.minecraft.util.math.AxisAlignedBB
 
-class MovableDoorTileEntity: TileEntityCrossingGate() {
+class MovableDoorTileEntity : TileEntityCrossingGate() {
     private val renderAABB by lazy { AxisAlignedBB(pos).grow(20.0) }
 
     private val playingSounds = mutableListOf<ISound>()

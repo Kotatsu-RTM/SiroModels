@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
-object WallBlock: BlockCrossingGate() {
+object WallBlock : BlockCrossingGate() {
     private val oneMeterDoor = AxisAlignedBB(0.0, 0.0, 0.5, 1.0, 1.35, 0.8)
     private val twoMeterDoor = AxisAlignedBB(-1.0, 0.0, 0.5, 1.0, 1.35, 0.8)
 
@@ -45,7 +45,7 @@ object WallBlock: BlockCrossingGate() {
         entityBox: AxisAlignedBB,
         collidingBoxes: MutableList<AxisAlignedBB>,
         entity: Entity?,
-        isActualState: Boolean
+        isActualState: Boolean,
     ) {
         @Suppress("DEPRECATION")
         getBoundingBox(state, world, pos).offset(pos).let {

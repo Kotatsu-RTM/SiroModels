@@ -5,7 +5,7 @@ import jp.ngt.rtm.block.BlockCrossingGate
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
 
-object CrewDoorBlock: BlockCrossingGate() {
+object CrewDoorBlock : BlockCrossingGate() {
     init {
         registryName = ResourceLocation(Values.MOD_ID, "platform_door_crew")
     }

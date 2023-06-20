@@ -6,7 +6,7 @@ import net.minecraft.network.NetworkManager
 import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.util.math.AxisAlignedBB
 
-class ControllerTileEntity: TileEntityCrossingGate() {
+class ControllerTileEntity : TileEntityCrossingGate() {
     private val renderAABB by lazy { AxisAlignedBB(pos).grow(20.0) }
 
     override fun getUpdatePacket() = SPacketUpdateTileEntity(pos, 1, writeToNBT(NBTTagCompound()))
@@ -36,10 +36,8 @@ class ControllerTileEntity: TileEntityCrossingGate() {
     }
 
     private fun serverProcess() {
-
     }
 
     private fun clientProcess() {
-
     }
 }

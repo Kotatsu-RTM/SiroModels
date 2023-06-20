@@ -42,15 +42,15 @@ class SiroModels {
 
     private fun registerModels() {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val path = javaClass.protectionDomain.codeSource.location.path
-            .removePrefix("jar:").split("!")
-            .dropLast(1).joinToString("")
+        val path =
+            javaClass.protectionDomain.codeSource.location.path
+                .removePrefix("jar:").split("!")
+                .dropLast(1).joinToString("")
 
         ZipFile(File(URI(path))).use { file ->
-            val modelDefinitions = file
-                .entries()
-                .toList()
-                .filter { it.name.startsWith("assets/siromodels/model_jsons/", true) && !it.isDirectory }
+            val modelDefinitions =
+                file.entries().toList()
+                    .filter { it.name.startsWith("assets/siromodels/model_jsons/", true) && !it.isDirectory }
 
             val progress = ProgressManager.push("Preparing models", modelDefinitions.size)
 

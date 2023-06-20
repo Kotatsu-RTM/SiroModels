@@ -7,7 +7,7 @@ import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 
-class CrewDoorRenderer: MachinePartsRenderer() {
+class CrewDoorRenderer : MachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as CrewDoorModel }
 
     override fun render(tileEntity: TileEntity?, pass: RenderPass, tickProgression: Float) {

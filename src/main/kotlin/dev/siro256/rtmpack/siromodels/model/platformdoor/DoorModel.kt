@@ -3,7 +3,7 @@ package dev.siro256.rtmpack.siromodels.model.platformdoor
 import dev.siro256.rtmpack.siromodels.model.ModelRegistry
 import jp.ngt.rtm.render.PartsRenderer
 
-class DoorModel(renderer: PartsRenderer<*, *>): ModelRegistry(renderer) {
+class DoorModel(renderer: PartsRenderer<*, *>) : ModelRegistry(renderer) {
     val base = registerParts("base_1", "base_2", "base_3", "pipe")
     val body = registerParts("body")
 
@@ -17,7 +17,7 @@ class DoorModel(renderer: PartsRenderer<*, *>): ModelRegistry(renderer) {
     val nearIndicator = registerParts("near_indicator")
     val directionLamp = DirectionLamp(renderer)
 
-    class DirectionLamp(renderer: PartsRenderer<*, *>): ModelRegistry(renderer) {
+    class DirectionLamp(renderer: PartsRenderer<*, *>) : ModelRegistry(renderer) {
         val lamp1 = registerParts("direction_lamp_1")
         val lamp2 = registerParts("direction_lamp_2")
         val lamp3 = registerParts("direction_lamp_3")
