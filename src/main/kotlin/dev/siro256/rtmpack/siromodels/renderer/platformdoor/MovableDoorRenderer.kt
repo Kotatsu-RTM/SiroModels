@@ -13,6 +13,7 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.bindVBO
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.render
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
@@ -58,6 +59,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
                 .setMaterial(currentMatId)
                 .setTexture(currentTexture)
                 .bindVBO(model.vbo)
+                .setLightMapCoords(lightMapCoords)
 
         texturedShader
             .setModelView(modelViewStack)
@@ -74,7 +76,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
 
         drawDoor(tileEntity, modelViewStack, texturedShader)
         drawDirection(tileEntity, modelViewStack, texturedShader, texturedWithColorShader)
-        drawNearIndicator(tileEntity, modelViewStack, texturedShader, texturedWithColorShader)
+        drawNearIndicator(tileEntity, modelViewStack, texturedShader)
     }
 
     private fun drawDoor(
@@ -106,7 +108,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         tileEntity: MovableDoorTileEntity?,
         modelViewMatrix: Matrix4fStack,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
-        texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Nothing, Nothing, Nothing>,
+        texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
         if (tileEntity is MovableDoorTileEntity && tileEntity.detectError) {
             val selector = nanoTime / 200_000_000 % 2 == 0L
@@ -128,7 +130,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
                 .setModelView(modelViewMatrix)
                 .setColor(0xe3172bffu)
                 .useModel(if (!selector) model.lamp2 else model.lamp5)
-                .render()
+                .render(disableLighting = true)
 
             return
         }
@@ -150,7 +152,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
             } else {
                 texturedWithColor
                     .useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position])
-                    .render()
+                    .render(disableLighting = true)
             }
             if (position == 5) position = 0 else ++position
         }
@@ -160,22 +162,13 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         tileEntity: MovableDoorTileEntity?,
         modelViewMatrix: Matrix4fStack,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
-        texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Nothing, Nothing, Nothing>,
     ) {
         val isLighting = nanoTime / 1_000_000_000 % 2 == 0L
 
-        if (isLighting && (tileEntity != null && !tileEntity.detectError)) {
-            texturedWithColorShader
-                .setModelView(modelViewMatrix)
-                .setColor(0xffffffffu)
-                .useModel(model.nearIndicator)
-                .render()
-        } else {
-            texturedShader
-                .setModelView(modelViewMatrix)
-                .useModel(model.nearIndicator)
-                .render()
-        }
+        texturedShader
+            .setModelView(modelViewMatrix)
+            .useModel(model.nearIndicator)
+            .render(disableLighting = isLighting && (tileEntity != null && !tileEntity.detectError))
     }
 
     private enum class Direction {

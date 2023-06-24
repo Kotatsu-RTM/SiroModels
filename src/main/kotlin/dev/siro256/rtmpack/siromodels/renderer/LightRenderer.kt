@@ -4,6 +4,7 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.bindVBO
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.render
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
@@ -81,12 +82,13 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
             .setMaterial(currentMatId)
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
+            .setLightMapCoords(lightMapCoords)
             .setModelView(modelViewMatrix)
             .setColor(0xffffffffu)
             .useModel(model.body)
-            .render()
+            .render(disableLighting = true)
             .useModel(model.light)
-            .render()
+            .render(disableLighting = true)
     }
 
     companion object {
