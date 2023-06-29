@@ -5,13 +5,13 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Compa
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
 import dev.siro256.rtmpack.siromodels.block.platformdoor.CrewDoorTileEntity
 import dev.siro256.rtmpack.siromodels.model.platformdoor.CrewDoorModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
+import dev.siro256.rtmpack.siromodels.renderer.base.ModelViewMatrix
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
@@ -24,7 +24,8 @@ class CrewDoorRenderer : CustomMachinePartsRenderer() {
         tileEntity: TileEntity?,
         pass: RenderPass,
         tickProgression: Float,
-        modelViewMatrix: Matrix4f,
+        modelMatrix: Matrix4f,
+        modelViewMatrix: ModelViewMatrix,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
@@ -37,7 +38,7 @@ class CrewDoorRenderer : CustomMachinePartsRenderer() {
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
-            .setModelView(modelViewMatrix)
+            .setModelView(modelMatrix, modelViewMatrix)
             .useModel(model.base)
             .render()
             .useModel(model.post)
