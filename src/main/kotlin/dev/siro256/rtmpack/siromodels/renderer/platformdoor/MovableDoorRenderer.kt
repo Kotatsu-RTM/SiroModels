@@ -20,7 +20,7 @@ import dev.siro256.rtmpack.siromodels.block.platformdoor.MovableDoorTileEntity
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.model.platformdoor.DoorModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
-import dev.siro256.rtmpack.siromodels.renderer.base.ModelViewMatrix
+import dev.siro256.rtmpack.siromodels.renderer.base.ViewMatrix
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
@@ -36,7 +36,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
@@ -62,7 +62,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
                 .setLightMapCoords(lightMapCoords)
 
         texturedShader
-            .setModelView(modelMatrix, modelViewMatrix)
+            .setModelView(modelMatrix, viewMatrix)
             .useModel(model.base)
             .render()
             .useModel(model.body)
@@ -74,15 +74,15 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
             .useModel(model.maintenancePanelRight)
             .render()
 
-        drawDoor(tileEntity, modelStack, modelViewMatrix, texturedShader)
-        drawDirection(tileEntity, modelStack, modelViewMatrix, texturedShader, texturedWithColorShader)
-        drawNearIndicator(tileEntity, modelStack, modelViewMatrix, texturedShader)
+        drawDoor(tileEntity, modelStack, viewMatrix, texturedShader)
+        drawDirection(tileEntity, modelStack, viewMatrix, texturedShader, texturedWithColorShader)
+        drawNearIndicator(tileEntity, modelStack, viewMatrix, texturedShader)
     }
 
     private fun drawDoor(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
         val leftMovement = if (tileEntity == null) -1.5F else -1.5F * tileEntity.doorOpeningLeft
@@ -91,7 +91,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         modelMatrix.stack {
             modelMatrix.translate(leftMovement, 0.0F, 0.0F)
             texturedShader
-                .setModelView(modelMatrix, modelViewMatrix)
+                .setModelView(modelMatrix, viewMatrix)
                 .useModel(model.doorLeft)
                 .render()
         }
@@ -99,7 +99,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         modelMatrix.stack {
             modelMatrix.translate(rightMovement, 0.0F, 0.0F)
             texturedShader
-                .setModelView(modelMatrix, modelViewMatrix)
+                .setModelView(modelMatrix, viewMatrix)
                 .useModel(model.doorRight)
                 .render()
         }
@@ -108,7 +108,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawDirection(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
         texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing, Nothing>,
     ) {
@@ -116,7 +116,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
             val selector = nanoTime / 200_000_000 % 2 == 0L
 
             texturedShader
-                .setModelView(modelMatrix, modelViewMatrix)
+                .setModelView(modelMatrix, viewMatrix)
                 .useModel(model.lamp1)
                 .render()
                 .useModel(model.lamp3)
@@ -129,7 +129,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
                 .render()
 
             texturedWithColorShader
-                .setModelView(modelMatrix, modelViewMatrix)
+                .setModelView(modelMatrix, viewMatrix)
                 .setColor(0xe3172bffu)
                 .useModel(if (!selector) model.lamp2 else model.lamp5)
                 .render(disableLighting = true)
@@ -140,9 +140,9 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         var position = (nanoTime / 200_000_000 % 6).toInt()
         val direction = Direction.values()[(nanoTime / 5_000_000_000 % 3).toInt()]
 
-        val textured = texturedShader.setModelView(modelMatrix, modelViewMatrix)
+        val textured = texturedShader.setModelView(modelMatrix, viewMatrix)
         val texturedWithColor =
-            texturedWithColorShader.setModelView(modelMatrix, modelViewMatrix).setColor(0xff8c00ffu)
+            texturedWithColorShader.setModelView(modelMatrix, viewMatrix).setColor(0xff8c00ffu)
 
         for (i in 0 until 3) {
             textured.useModel(model.lamps[if (direction == Direction.RIGHT) 5 - position else position]).render()
@@ -164,13 +164,13 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawNearIndicator(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
         val isLighting = nanoTime / 1_000_000_000 % 2 == 0L
 
         texturedShader
-            .setModelView(modelMatrix, modelViewMatrix)
+            .setModelView(modelMatrix, viewMatrix)
             .useModel(model.nearIndicator)
             .render(disableLighting = isLighting && (tileEntity != null && !tileEntity.detectError))
     }

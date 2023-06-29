@@ -11,7 +11,7 @@ import dev.siro256.rtmpack.siromodels.block.platformdoor.WallTileEntity
 import dev.siro256.rtmpack.siromodels.model.platformdoor.WallModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
-import dev.siro256.rtmpack.siromodels.renderer.base.ModelViewMatrix
+import dev.siro256.rtmpack.siromodels.renderer.base.ViewMatrix
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
@@ -25,7 +25,7 @@ class WallRenderer : CustomMachinePartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
@@ -38,7 +38,7 @@ class WallRenderer : CustomMachinePartsRenderer() {
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
-            .setModelView(modelMatrix, modelViewMatrix)
+            .setModelView(modelMatrix, viewMatrix)
             .useModel(model.base)
             .render()
             .useModel(model.body)

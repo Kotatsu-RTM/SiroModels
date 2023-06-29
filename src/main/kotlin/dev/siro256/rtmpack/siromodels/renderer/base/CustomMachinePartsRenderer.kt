@@ -21,7 +21,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
     private var previousFrameIndex = Int.MIN_VALUE
     private var previousTileEntityPos = BlockPos(100_000_000, 100_000_000, 100_000_000)
 
-    private var modelViewMatrix by Delegates.notNull<ModelViewMatrix>()
+    private var viewMatrix by Delegates.notNull<ViewMatrix>()
     private var projectionMatrix by Delegates.notNull<Matrix4f>()
     private val matrixBuffer = GLAllocation.createDirectFloatBuffer(16)
 
@@ -43,12 +43,12 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
             previousFrameIndex = frameIndex
             tileEntity?.pos?.let { previousTileEntityPos = it }
 
-            modelViewMatrix =
+            viewMatrix =
                 matrixBuffer.apply {
                     rewind()
                     GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, this)
                     rewind()
-                }.let { ModelViewMatrix(Matrix4f(it)) }
+                }.let { ViewMatrix(Matrix4f(it)) }
 
             projectionMatrix =
                 matrixBuffer.apply {
@@ -63,7 +63,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
         tileEntity?.resourceState?.resourceSet?.config?.offset?.let { modelMatrix.translate(Vector3f(it)) }
 
         //Cancel previous operations
-        modelViewMatrix.matrix.mul(Matrix4f(modelMatrix).invert())
+        viewMatrix.matrix.mul(Matrix4f(modelMatrix).invert())
 
         val lightMapCoords =
             if (tileEntity == null) {
@@ -72,7 +72,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
                 Vector2f((OpenGlHelper.lastBrightnessX + 8.0F) / 256.0F, (OpenGlHelper.lastBrightnessY + 8.0F) / 256.0F)
             }
 
-        render(tileEntity, pass, tickProgression, modelMatrix, modelViewMatrix, projectionMatrix, lightMapCoords)
+        render(tileEntity, pass, tickProgression, modelMatrix, viewMatrix, projectionMatrix, lightMapCoords)
     }
 
     abstract fun render(
@@ -80,7 +80,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     )

@@ -22,13 +22,13 @@ interface Renderer {
 
     fun TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>.setModelView(
         modelMatrix: Matrix4f,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
     ) =
-        setModelView(Matrix4f(modelViewMatrix.matrix).mul(modelMatrix), Matrix4f(modelMatrix).invert())
+        setModelView(Matrix4f(viewMatrix.matrix).mul(modelMatrix), Matrix4f(modelMatrix).invert())
 
     fun TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing, Nothing>.setModelView(
         modelMatrix: Matrix4f,
-        modelViewMatrix: ModelViewMatrix,
+        viewMatrix: ViewMatrix,
     ) =
-        setModelView(Matrix4f(modelViewMatrix.matrix).mul(modelMatrix), Matrix4f(modelMatrix).invert())
+        setModelView(Matrix4f(viewMatrix.matrix).mul(modelMatrix), Matrix4f(modelMatrix).invert())
 }
