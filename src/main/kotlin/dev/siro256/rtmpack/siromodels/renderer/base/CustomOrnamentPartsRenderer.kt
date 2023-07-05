@@ -21,7 +21,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
     private var previousFrameIndex = Int.MIN_VALUE
     private var previousTileEntityPos = BlockPos(100_000_000, 100_000_000, 100_000_000)
 
-    private var viewMatrix by Delegates.notNull<ViewMatrix>()
+    private var viewMatrix by Delegates.notNull<Matrix4f>()
     private var projectionMatrix by Delegates.notNull<Matrix4f>()
     private val matrixBuffer = GLAllocation.createDirectFloatBuffer(16)
 
@@ -48,7 +48,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
                     rewind()
                     GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, this)
                     rewind()
-                }.let { ViewMatrix(Matrix4f(it)) }
+                }.let { Matrix4f(it) }
 
             projectionMatrix =
                 matrixBuffer.apply {
@@ -63,7 +63,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
         tileEntity?.resourceState?.resourceSet?.config?.offset?.let { modelMatrix.translate(Vector3f(it)) }
 
         //Cancel previous operations
-        viewMatrix.matrix.mul(Matrix4f(modelMatrix).invert())
+        viewMatrix.mul(Matrix4f(modelMatrix).invert())
 
         val lightMapCoords =
             if (tileEntity == null) {
@@ -80,7 +80,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     )

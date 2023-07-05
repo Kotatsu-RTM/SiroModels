@@ -6,6 +6,7 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Compa
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
@@ -14,13 +15,13 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Buil
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
 import dev.siro256.rtmpack.siromodels.block.platformdoor.MovableDoorTileEntity
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.model.platformdoor.DoorModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
-import dev.siro256.rtmpack.siromodels.renderer.base.ViewMatrix
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
@@ -36,7 +37,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
@@ -82,7 +83,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawDoor(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
         val leftMovement = if (tileEntity == null) -1.5F else -1.5F * tileEntity.doorOpeningLeft
@@ -108,7 +109,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawDirection(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
         texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing, Nothing>,
     ) {
@@ -164,7 +165,7 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawNearIndicator(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
         val isLighting = nanoTime / 1_000_000_000 % 2 == 0L

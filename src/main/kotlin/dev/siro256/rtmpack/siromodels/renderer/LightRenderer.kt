@@ -6,11 +6,11 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Buil
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomOrnamentPartsRenderer
-import dev.siro256.rtmpack.siromodels.renderer.base.ViewMatrix
 import jp.ngt.rtm.block.tileentity.TileEntityFluorescent
 import jp.ngt.rtm.render.RenderPass
 import net.minecraft.tileentity.TileEntity
@@ -25,7 +25,7 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: ViewMatrix,
+        viewMatrix: Matrix4f,
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
