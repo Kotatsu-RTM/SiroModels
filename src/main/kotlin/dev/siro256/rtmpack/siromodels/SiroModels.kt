@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import dev.siro256.rtmpack.siromodels.block.ornament.BlockLight
 import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.block.platformdoor.*
+import dev.siro256.rtmpack.siromodels.renderer.LightRenderer
 import dev.siro256.rtmpack.siromodels.sound.Sounds
 import jp.ngt.rtm.modelpack.ModelPackManager
 import jp.ngt.rtm.modelpack.cfg.ModelConfig
@@ -12,6 +13,7 @@ import net.minecraft.block.Block
 import net.minecraft.util.SoundEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegistryEvent
+import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.Mod.EventHandler
@@ -30,7 +32,7 @@ import java.util.zip.ZipFile
 @EventBusSubscriber(modid = Values.MOD_ID)
 class SiroModels {
     @EventHandler
-    fun fmlInitEvent(@Suppress("UNUSED_PARAMETER") event: FMLInitializationEvent) {
+    fun fmlInitEvent(event: FMLInitializationEvent) {
         registerModels()
 
         listOf(
@@ -46,6 +48,11 @@ class SiroModels {
         ).forEach {
             GameRegistry.registerTileEntity(it.key, it.value.registryName)
         }
+
+        if (event.side.isClient)
+            mapOf(
+                TileEntityLight::class.java to LightRenderer.TileEntityRenderer
+            ).forEach(ClientRegistry::bindTileEntitySpecialRenderer)
     }
 
     private fun registerModels() {

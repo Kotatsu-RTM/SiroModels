@@ -57,7 +57,7 @@ object RendererRouter {
             "light_type1_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(OrnamentPartsRenderer::class.java, LightRenderer())
+                    renderer.deepCopy(OrnamentPartsRenderer::class.java, LightRenderer)
                 )
                 LightModel(modelObject)
             }

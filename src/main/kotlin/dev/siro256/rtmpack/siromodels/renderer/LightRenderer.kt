@@ -10,15 +10,19 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Buil
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
 import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
+import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomOrnamentPartsRenderer
 import jp.ngt.rtm.block.tileentity.TileEntityFluorescent
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
 import org.joml.Vector2f
 
-class LightRenderer : CustomOrnamentPartsRenderer() {
+object LightRenderer : CustomOrnamentPartsRenderer() {
+    private const val MODEL_HEIGHT = 0.15F
+
     private val model by lazy { RenderDataManager.models[modelName] as LightModel }
 
     override fun render(
@@ -28,6 +32,7 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
         modelMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
+        RuntimeException().printStackTrace()
         if (pass != RenderPass.NORMAL) return
         if (tileEntity !is TileEntityFluorescent?) return
 
@@ -91,7 +96,14 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
             .render(disableLighting = true)
     }
 
-    companion object {
-        private const val MODEL_HEIGHT = 0.15F
+    object TileEntityRenderer : TileEntitySpecialRenderer<TileEntityLight>() {
+        override fun render(
+            tileEntity: TileEntityLight, x: Double, y: Double, z: Double,
+            tickProgression: Float,
+            destroyStage: Int,
+            alpha: Float
+        ) {
+            render(tileEntity, RenderPass.NORMAL, tickProgression)
+        }
     }
 }
