@@ -98,10 +98,11 @@ object LightRenderer : CustomOrnamentPartsRenderer() {
 
     object TileEntityRenderer : TileEntitySpecialRenderer<TileEntityLight>() {
         override fun render(
-            tileEntity: TileEntityLight, x: Double, y: Double, z: Double,
+            tileEntity: TileEntityLight,
+            x: Double, y: Double, z: Double,
             tickProgression: Float,
             destroyStage: Int,
-            alpha: Float
+            alpha: Float,
         ) {
             render(tileEntity, RenderPass.NORMAL, tickProgression)
         }
