@@ -1,6 +1,8 @@
 package dev.siro256.rtmpack.siromodels
 
 import com.google.gson.GsonBuilder
+import dev.siro256.rtmpack.siromodels.block.ornament.BlockLight
+import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.block.platformdoor.*
 import dev.siro256.rtmpack.siromodels.sound.Sounds
 import jp.ngt.rtm.modelpack.ModelPackManager
@@ -34,7 +36,8 @@ class SiroModels {
             MovableDoorTileEntity::class.java to MovableDoorBlock,
             CrewDoorTileEntity::class.java to CrewDoorBlock,
             ControllerTileEntity::class.java to ControllerBlock,
-            WallTileEntity::class.java to WallBlock
+            WallTileEntity::class.java to WallBlock,
+            TileEntityLight::class.java to BlockLight
         ).forEach {
             GameRegistry.registerTileEntity(it.key, it.value.registryName)
         }
@@ -87,7 +90,8 @@ class SiroModels {
                 MovableDoorBlock,
                 CrewDoorBlock,
                 ControllerBlock,
-                WallBlock
+                WallBlock,
+                BlockLight
             ).forEach {
                 event.registry.register(it)
             }
