@@ -10,6 +10,7 @@ import jp.ngt.rtm.modelpack.cfg.ModelConfig
 import jp.ngt.rtm.modelpack.cfg.ResourceConfig
 import net.minecraft.block.Block
 import net.minecraft.util.SoundEvent
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
@@ -31,6 +32,10 @@ class SiroModels {
     @EventHandler
     fun fmlInitEvent(@Suppress("UNUSED_PARAMETER") event: FMLInitializationEvent) {
         registerModels()
+
+        listOf(
+            RightClickHandler
+        ).forEach(MinecraftForge.EVENT_BUS::register)
 
         mapOf(
             MovableDoorTileEntity::class.java to MovableDoorBlock,
