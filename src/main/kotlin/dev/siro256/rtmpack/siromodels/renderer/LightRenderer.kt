@@ -88,9 +88,7 @@ object LightRenderer : CustomOrnamentPartsRenderer() {
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
             .setModelMatrix(modelMatrix)
-            .useModel(model.body)
-            .render(disableLighting = true)
-            .useModel(model.light)
+            .useModel(model.all)
             .render(disableLighting = true)
     }
 
