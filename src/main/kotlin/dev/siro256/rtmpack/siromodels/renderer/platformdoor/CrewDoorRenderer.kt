@@ -14,11 +14,12 @@ import dev.siro256.rtmpack.siromodels.model.platformdoor.CrewDoorModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
 import org.joml.Vector2f
 
-class CrewDoorRenderer : CustomMachinePartsRenderer() {
+object CrewDoorRenderer : CustomMachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as CrewDoorModel }
 
     override fun render(
@@ -56,5 +57,17 @@ class CrewDoorRenderer : CustomMachinePartsRenderer() {
             .render()
             .useModel(model.handle)
             .render()
+    }
+
+    object TileEntityRenderer : TileEntitySpecialRenderer<CrewDoorTileEntity>() {
+        override fun render(
+            tileEntity: CrewDoorTileEntity,
+            x: Double, y: Double, z: Double,
+            tickProgression: Float,
+            destroyStage: Int,
+            alpha: Float,
+        ) {
+            render(tileEntity, RenderPass.NORMAL, tickProgression)
+        }
     }
 }

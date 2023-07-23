@@ -14,11 +14,12 @@ import dev.siro256.rtmpack.siromodels.model.platformdoor.WallModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
 import org.joml.Vector2f
 
-class WallRenderer : CustomMachinePartsRenderer() {
+object WallRenderer : CustomMachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as WallModel }
 
     override fun render(
@@ -42,5 +43,17 @@ class WallRenderer : CustomMachinePartsRenderer() {
             .render()
             .useModel(model.body)
             .render()
+    }
+
+    object TileEntityRenderer : TileEntitySpecialRenderer<WallTileEntity>() {
+        override fun render(
+            tileEntity: WallTileEntity,
+            x: Double, y: Double, z: Double,
+            tickProgression: Float,
+            destroyStage: Int,
+            alpha: Float,
+        ) {
+            render(tileEntity, RenderPass.NORMAL, tickProgression)
+        }
     }
 }

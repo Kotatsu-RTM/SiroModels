@@ -14,11 +14,12 @@ import dev.siro256.rtmpack.siromodels.model.platformdoor.ControllerModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
 import org.joml.Vector2f
 
-class ControllerRenderer : CustomMachinePartsRenderer() {
+object ControllerRenderer : CustomMachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as ControllerModel }
 
     override fun render(
@@ -46,5 +47,17 @@ class ControllerRenderer : CustomMachinePartsRenderer() {
             .render()
             .useModel(model.maintenancePanelRight)
             .render()
+    }
+
+    object TileEntityRenderer : TileEntitySpecialRenderer<ControllerTileEntity>() {
+        override fun render(
+            tileEntity: ControllerTileEntity,
+            x: Double, y: Double, z: Double,
+            tickProgression: Float,
+            destroyStage: Int,
+            alpha: Float,
+        ) {
+            render(tileEntity, RenderPass.NORMAL, tickProgression)
+        }
     }
 }

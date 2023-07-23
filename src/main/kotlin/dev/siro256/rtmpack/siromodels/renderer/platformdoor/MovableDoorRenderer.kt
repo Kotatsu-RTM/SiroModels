@@ -24,12 +24,13 @@ import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.model.platformdoor.DoorModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import org.joml.Matrix4f
 import org.joml.Matrix4fStack
 import org.joml.Vector2f
 
-class MovableDoorRenderer : CustomMachinePartsRenderer() {
+object MovableDoorRenderer : CustomMachinePartsRenderer() {
     private val model by lazy { RenderDataManager.models[modelName] as DoorModel }
     private var nanoTime = 0L
 
@@ -170,6 +171,18 @@ class MovableDoorRenderer : CustomMachinePartsRenderer() {
             .setModelMatrix(modelMatrix)
             .useModel(model.nearIndicator)
             .render(disableLighting = isLighting && (tileEntity != null && !tileEntity.detectError))
+    }
+
+    object TileEntityRenderer : TileEntitySpecialRenderer<MovableDoorTileEntity>() {
+        override fun render(
+            tileEntity: MovableDoorTileEntity,
+            x: Double, y: Double, z: Double,
+            tickProgression: Float,
+            destroyStage: Int,
+            alpha: Float,
+        ) {
+            render(tileEntity, RenderPass.NORMAL, tickProgression)
+        }
     }
 
     private enum class Direction {

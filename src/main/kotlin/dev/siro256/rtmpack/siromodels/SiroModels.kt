@@ -5,6 +5,10 @@ import dev.siro256.rtmpack.siromodels.block.ornament.BlockLight
 import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.block.platformdoor.*
 import dev.siro256.rtmpack.siromodels.renderer.LightRenderer
+import dev.siro256.rtmpack.siromodels.renderer.platformdoor.ControllerRenderer
+import dev.siro256.rtmpack.siromodels.renderer.platformdoor.CrewDoorRenderer
+import dev.siro256.rtmpack.siromodels.renderer.platformdoor.MovableDoorRenderer
+import dev.siro256.rtmpack.siromodels.renderer.platformdoor.WallRenderer
 import dev.siro256.rtmpack.siromodels.sound.Sounds
 import jp.ngt.rtm.modelpack.ModelPackManager
 import jp.ngt.rtm.modelpack.cfg.ModelConfig
@@ -49,10 +53,28 @@ class SiroModels {
             GameRegistry.registerTileEntity(it.key, it.value.registryName)
         }
 
-        if (event.side.isClient)
-            mapOf(
-                TileEntityLight::class.java to LightRenderer.TileEntityRenderer
-            ).forEach(ClientRegistry::bindTileEntitySpecialRenderer)
+        if (event.side.isClient) {
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                MovableDoorTileEntity::class.java,
+                MovableDoorRenderer.TileEntityRenderer
+            )
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                CrewDoorTileEntity::class.java,
+                CrewDoorRenderer.TileEntityRenderer
+            )
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                ControllerTileEntity::class.java,
+                ControllerRenderer.TileEntityRenderer
+            )
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                WallTileEntity::class.java,
+                WallRenderer.TileEntityRenderer
+            )
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                TileEntityLight::class.java,
+                LightRenderer.TileEntityRenderer
+            )
+        }
     }
 
     private fun registerModels() {
