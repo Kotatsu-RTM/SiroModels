@@ -1,6 +1,5 @@
 package dev.siro256.rtmpack.siromodels.renderer.base
 
-import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import dev.siro256.rtmpack.siromodels.CustomModelObject
 import dev.siro256.rtmpack.siromodels.deepCopy
 import jp.ngt.rtm.block.tileentity.TileEntityOrnament
@@ -37,13 +36,7 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
                 Vector2f((OpenGlHelper.lastBrightnessX + 8.0F) / 256.0F, (OpenGlHelper.lastBrightnessY + 8.0F) / 256.0F)
             }
 
-        render(
-            tileEntity,
-            pass,
-            tickProgression,
-            modelMatrix, GLStateImpl.getView(), GLStateImpl.getProjection(),
-            lightMapCoords
-        )
+        render(tileEntity,pass, tickProgression, modelMatrix, lightMapCoords)
     }
 
     abstract fun render(
@@ -51,8 +44,6 @@ abstract class CustomOrnamentPartsRenderer : OrnamentPartsRenderer(), Renderer {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: Matrix4f,
-        projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     )
 }

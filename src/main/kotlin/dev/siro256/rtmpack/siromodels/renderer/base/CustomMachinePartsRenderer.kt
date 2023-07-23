@@ -1,22 +1,16 @@
 package dev.siro256.rtmpack.siromodels.renderer.base
 
-import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import dev.siro256.rtmpack.siromodels.CustomModelObject
 import dev.siro256.rtmpack.siromodels.deepCopy
 import jp.ngt.rtm.block.tileentity.TileEntityMachineBase
 import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.RenderPass
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.GLAllocation
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.math.BlockPos
 import org.joml.Matrix4f
 import org.joml.Vector2f
 import org.joml.Vector3f
-import org.lwjgl.opengl.GL11
-import kotlin.properties.Delegates
 
 abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
     final override var currentTexture = -1
@@ -42,13 +36,7 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
                 Vector2f((OpenGlHelper.lastBrightnessX + 8.0F) / 256.0F, (OpenGlHelper.lastBrightnessY + 8.0F) / 256.0F)
             }
 
-        render(
-            tileEntity,
-            pass,
-            tickProgression,
-            modelMatrix, GLStateImpl.getView(), GLStateImpl.getProjection(),
-            lightMapCoords
-        )
+        render(tileEntity, pass, tickProgression, modelMatrix, lightMapCoords)
     }
 
     abstract fun render(
@@ -56,8 +44,6 @@ abstract class CustomMachinePartsRenderer : MachinePartsRenderer(), Renderer {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: Matrix4f,
-        projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     )
 }

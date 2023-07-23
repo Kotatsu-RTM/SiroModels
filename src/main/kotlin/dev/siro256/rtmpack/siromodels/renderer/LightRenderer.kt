@@ -6,9 +6,10 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Buil
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelView
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelMatrix
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
+import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.renderer.base.CustomOrnamentPartsRenderer
 import jp.ngt.rtm.block.tileentity.TileEntityFluorescent
@@ -25,8 +26,6 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: Matrix4f,
-        projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
         if (pass != RenderPass.NORMAL) return
@@ -79,12 +78,12 @@ class LightRenderer : CustomOrnamentPartsRenderer() {
         }
 
         TexturedWithColorShader
-            .updateProjection(projectionMatrix)
+            .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
             .setMaterial(currentMatId)
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
-            .setModelView(modelMatrix, viewMatrix)
+            .setModelMatrix(modelMatrix)
             .setColor(0xffffffffu)
             .useModel(model.body)
             .render(disableLighting = true)

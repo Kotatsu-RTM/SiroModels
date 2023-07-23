@@ -5,9 +5,10 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Compa
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelView
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelMatrix
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
+import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import dev.siro256.rtmpack.siromodels.block.platformdoor.CrewDoorTileEntity
 import dev.siro256.rtmpack.siromodels.model.platformdoor.CrewDoorModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
@@ -25,20 +26,18 @@ class CrewDoorRenderer : CustomMachinePartsRenderer() {
         pass: RenderPass,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        viewMatrix: Matrix4f,
-        projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f,
     ) {
         if (pass != RenderPass.NORMAL) return
         if (tileEntity !is CrewDoorTileEntity?) return
 
         TexturedShader
-            .updateProjection(projectionMatrix)
+            .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
             .setMaterial(currentMatId)
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
-            .setModelView(modelMatrix, viewMatrix)
+            .setModelMatrix(modelMatrix)
             .useModel(model.base)
             .render()
             .useModel(model.post)
