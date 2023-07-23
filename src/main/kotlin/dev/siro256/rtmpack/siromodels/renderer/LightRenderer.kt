@@ -1,14 +1,13 @@
 package dev.siro256.rtmpack.siromodels.renderer
 
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.bindVBO
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.render
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setColor
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setLightMapCoords
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setMaterial
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelMatrix
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
-import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.bindVBO
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.render
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setLightMapCoords
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setMaterial
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelMatrix
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
+import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
 import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
@@ -82,14 +81,13 @@ object LightRenderer : CustomOrnamentPartsRenderer() {
             }
         }
 
-        TexturedWithColorShader
+        TexturedShader
             .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
             .setMaterial(currentMatId)
             .setTexture(currentTexture)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
             .setModelMatrix(modelMatrix)
-            .setColor(0xffffffffu)
             .useModel(model.body)
             .render(disableLighting = true)
             .useModel(model.light)
