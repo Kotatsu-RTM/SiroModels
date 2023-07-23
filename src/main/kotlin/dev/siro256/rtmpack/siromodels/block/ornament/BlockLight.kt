@@ -7,7 +7,7 @@ import net.minecraft.world.World
 
 object BlockLight : BlockFluorescent() {
     init {
-        registryName = ResourceLocation(Values.MOD_ID, "light_type1_2m")
+        registryName = ResourceLocation(Values.MOD_ID, "light")
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int) = TileEntityLight().apply { world = worldIn }
