@@ -45,7 +45,11 @@ object RightClickHandler {
                     }
 
                 world.setBlockState(pos, BlockLight.defaultState)
-                (world.getTileEntity(pos) as TileEntityLight).dir = direction.toByte()
+
+                val tileEntity = world.getTileEntity(pos) as TileEntityLight
+                tileEntity.dir = direction.toByte()
+                tileEntity.resourceState.readFromNBT(state)
+                tileEntity.updateResourceState()
             }
             else -> return
         }
