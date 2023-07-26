@@ -28,6 +28,7 @@ import org.joml.Vector2f
 
 object LightRenderer : OrnamentRenderer<TileEntityLight>() {
     private const val MODEL_HEIGHT = 0.15F
+    private val textureLocation = ResourceLocation(Values.MOD_ID, "textures/ornament/light.png")
 
     override fun render(
         tileEntity: TileEntityLight?,
@@ -86,19 +87,10 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
             }
         }
 
-        val textureLocation = ResourceLocation(Values.MOD_ID, "textures/ornament/light.png")
-        val textureManager = Minecraft.getMinecraft().textureManager
-        @Suppress("UNNECESSARY_SAFE_CALL")
-        val textureId =
-            textureManager.getTexture(textureLocation)?.glTextureId ?: run {
-                textureManager.loadTexture(textureLocation, SimpleTexture(textureLocation))
-                textureManager.getTexture(textureLocation).glTextureId
-            }
-
         TexturedShader
             .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)
             .setMaterial(0)
-            .setTexture(textureId)
+            .setTexture(getTextureId(textureLocation))
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
             .setModelMatrix(modelMatrix)
