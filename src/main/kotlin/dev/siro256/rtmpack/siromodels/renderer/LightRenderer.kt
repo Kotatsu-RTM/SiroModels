@@ -38,7 +38,6 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
         projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f
     ) {
-        if (modelName == "Fluorescent01") return
         val model = RenderDataManager.models[modelName] as LightModel
 
         if (tileEntity != null) {
