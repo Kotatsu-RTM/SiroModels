@@ -115,9 +115,7 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
         private var modelObjectReplaced = false
 
         override fun render(tileEntity: TileEntity?, pass: RenderPass?, tickProgression: Float) {
-            if (pass != RenderPass.NORMAL) return
-            if (tileEntity !is TileEntityLight?)
-                throw IllegalArgumentException("An unexpected type \"${tileEntity?.javaClass}\" was passed")
+            if (pass != RenderPass.NORMAL || tileEntity !is TileEntityLight?) return
 
             if (!modelObjectReplaced) {
                 modelObjectReplaced = true
