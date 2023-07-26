@@ -8,32 +8,38 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Compa
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setModelMatrix
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedShader.Builder.Companion.useModel
-import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
+import dev.siro256.rtmpack.siromodels.CustomModelObject
+import dev.siro256.rtmpack.siromodels.Values
 import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
+import dev.siro256.rtmpack.siromodels.deepCopy
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
-import dev.siro256.rtmpack.siromodels.renderer.base.CustomOrnamentPartsRenderer
-import jp.ngt.rtm.block.tileentity.TileEntityFluorescent
+import dev.siro256.rtmpack.siromodels.renderer.base.OrnamentRenderer
+import jp.ngt.rtm.render.ModelObject
+import jp.ngt.rtm.render.OrnamentPartsRenderer
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.texture.SimpleTexture
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.ResourceLocation
 import org.joml.Matrix4f
 import org.joml.Vector2f
 
-object LightRenderer : CustomOrnamentPartsRenderer() {
+object LightRenderer : OrnamentRenderer<TileEntityLight>() {
     private const val MODEL_HEIGHT = 0.15F
 
-    private val model by lazy { RenderDataManager.models[modelName] as LightModel }
-
     override fun render(
-        tileEntity: TileEntity?,
-        pass: RenderPass,
+        tileEntity: TileEntityLight?,
+        modelName: String,
         tickProgression: Float,
         modelMatrix: Matrix4f,
-        lightMapCoords: Vector2f,
+        viewMatrix: Matrix4f,
+        projectionMatrix: Matrix4f,
+        lightMapCoords: Vector2f
     ) {
-        RuntimeException().printStackTrace()
-        if (pass != RenderPass.NORMAL) return
-        if (tileEntity !is TileEntityFluorescent?) return
+        if (modelName == "Fluorescent01") return
+        val model = RenderDataManager.models[modelName] as LightModel
 
         if (tileEntity != null) {
             when (tileEntity.dir.toInt()) {
@@ -81,10 +87,19 @@ object LightRenderer : CustomOrnamentPartsRenderer() {
             }
         }
 
+        val textureLocation = ResourceLocation(Values.MOD_ID, "textures/ornament/light.png")
+        val textureManager = Minecraft.getMinecraft().textureManager
+        @Suppress("UNNECESSARY_SAFE_CALL")
+        val textureId =
+            textureManager.getTexture(textureLocation)?.glTextureId ?: run {
+                textureManager.loadTexture(textureLocation, SimpleTexture(textureLocation))
+                textureManager.getTexture(textureLocation).glTextureId
+            }
+
         TexturedShader
-            .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
-            .setMaterial(currentMatId)
-            .setTexture(currentTexture)
+            .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)
+            .setMaterial(0)
+            .setTexture(textureId)
             .bindVBO(model.vbo)
             .setLightMapCoords(lightMapCoords)
             .setModelMatrix(modelMatrix)
@@ -100,7 +115,36 @@ object LightRenderer : CustomOrnamentPartsRenderer() {
             destroyStage: Int,
             alpha: Float,
         ) {
-            render(tileEntity, RenderPass.NORMAL, tickProgression)
+            render(
+                tileEntity,
+                tileEntity.resourceState.resourceSet,
+                x.toFloat(), y.toFloat(), z.toFloat(),
+                tickProgression
+            )
+        }
+    }
+
+    class RTMRenderer : OrnamentPartsRenderer() {
+        private var modelObjectReplaced = false
+
+        override fun render(tileEntity: TileEntity?, pass: RenderPass?, tickProgression: Float) {
+            if (pass != RenderPass.NORMAL) return
+            if (tileEntity !is TileEntityLight?)
+                throw IllegalArgumentException("An unexpected type \"${tileEntity?.javaClass}\" was passed")
+
+            if (!modelObjectReplaced) {
+                modelObjectReplaced = true
+                modelSet.modelObj = modelSet.modelObj.deepCopy(ModelObject::class.java, CustomModelObject())
+            }
+
+            render(
+                tileEntity,
+                this.modelSet,
+                tileEntity?.x?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerX.toFloat() } ?: 0.0F,
+                tileEntity?.y?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerY.toFloat() } ?: 0.0F,
+                tileEntity?.z?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerZ.toFloat() } ?: 0.0F,
+                tickProgression
+            )
         }
     }
 }
