@@ -18,47 +18,51 @@ import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Buil
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setModelMatrix
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.setTexture
 import com.github.kotatsu_rtm.kotatsulib.api.shader.TexturedWithColorShader.Builder.Companion.useModel
-import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
+import dev.siro256.rtmpack.siromodels.CustomModelObject
+import dev.siro256.rtmpack.siromodels.Values
 import dev.siro256.rtmpack.siromodels.block.platformdoor.MovableDoorTileEntity
-import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
+import dev.siro256.rtmpack.siromodels.deepCopy
 import dev.siro256.rtmpack.siromodels.model.platformdoor.DoorModel
-import dev.siro256.rtmpack.siromodels.renderer.base.CustomMachinePartsRenderer
+import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
+import dev.siro256.rtmpack.siromodels.renderer.base.MachineRenderer
+import jp.ngt.rtm.render.MachinePartsRenderer
+import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.RenderPass
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.ResourceLocation
 import org.joml.Matrix4f
 import org.joml.Matrix4fStack
 import org.joml.Vector2f
 
-object MovableDoorRenderer : CustomMachinePartsRenderer() {
-    private val model by lazy { RenderDataManager.models[modelName] as DoorModel }
-    private var nanoTime = 0L
+object MovableDoorRenderer : MachineRenderer<MovableDoorTileEntity>() {
+    private val textureLocation = ResourceLocation(Values.MOD_ID, "textures/machine/door.png")
 
     override fun render(
-        tileEntity: TileEntity?,
-        pass: RenderPass,
+        tileEntity: MovableDoorTileEntity?,
+        modelName: String,
         tickProgression: Float,
-        modelMatrix: Matrix4f,
-        lightMapCoords: Vector2f,
+        modelMatrix: Matrix4f, viewMatrix: Matrix4f, projectionMatrix: Matrix4f,
+        lightMapCoords: Vector2f
     ) {
-        if (pass != RenderPass.NORMAL) return
-        if (tileEntity !is MovableDoorTileEntity?) return
-
-        nanoTime = System.nanoTime()
-
+        val model = RenderDataManager.models[modelName] as DoorModel
+        val nanoTime = System.nanoTime()
         val modelStack = Matrix4fStack(4).apply { set(modelMatrix) }
+        val textureId = getTextureId(textureLocation)
+
         val texturedShader =
             TexturedShader
-                .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
-                .setMaterial(currentMatId)
-                .setTexture(currentTexture)
+                .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)
+                .setMaterial(0)
+                .setTexture(textureId)
                 .bindVBO(model.vbo)
                 .setLightMapCoords(lightMapCoords)
         val texturedWithColorShader =
             TexturedWithColorShader
-                .setViewAndProjectionMatrix(GLStateImpl.getView(), GLStateImpl.getProjection())
-                .setMaterial(currentMatId)
-                .setTexture(currentTexture)
+                .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)
+                .setMaterial(0)
+                .setTexture(textureId)
                 .bindVBO(model.vbo)
                 .setLightMapCoords(lightMapCoords)
 
@@ -75,14 +79,15 @@ object MovableDoorRenderer : CustomMachinePartsRenderer() {
             .useModel(model.maintenancePanelRight)
             .render()
 
-        drawDoor(tileEntity, modelStack, texturedShader)
-        drawDirection(tileEntity, modelStack, texturedShader, texturedWithColorShader)
-        drawNearIndicator(tileEntity, modelStack, texturedShader)
+        drawDoor(tileEntity, modelStack, model, texturedShader)
+        drawDirection(tileEntity, modelStack, model, nanoTime, texturedShader, texturedWithColorShader)
+        drawNearIndicator(tileEntity, modelStack, model, nanoTime, texturedShader)
     }
 
     private fun drawDoor(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
+        model: DoorModel,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
     ) {
         val leftMovement = if (tileEntity == null) -1.5F else -1.5F * tileEntity.doorOpeningLeft
@@ -108,6 +113,8 @@ object MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawDirection(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
+        model: DoorModel,
+        nanoTime: Long,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
         texturedWithColorShader: TexturedWithColorShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing, Nothing>,
     ) {
@@ -163,6 +170,8 @@ object MovableDoorRenderer : CustomMachinePartsRenderer() {
     private fun drawNearIndicator(
         tileEntity: MovableDoorTileEntity?,
         modelMatrix: Matrix4fStack,
+        model: DoorModel,
+        nanoTime: Long,
         texturedShader: TexturedShader.Builder<Matrix4f, Int, Int, VBO.VertexNormalUV, Vector2f, Nothing, Nothing>,
     ) {
         val isLighting = nanoTime / 1_000_000_000 % 2 == 0L
@@ -181,7 +190,34 @@ object MovableDoorRenderer : CustomMachinePartsRenderer() {
             destroyStage: Int,
             alpha: Float,
         ) {
-            render(tileEntity, RenderPass.NORMAL, tickProgression)
+            render(
+                tileEntity,
+                tileEntity.resourceState.resourceSet,
+                x.toFloat(), y.toFloat(), z.toFloat(),
+                tickProgression
+            )
+        }
+    }
+
+    class RTMRenderer : MachinePartsRenderer() {
+        private var modelObjectReplaced = false
+
+        override fun render(tileEntity: TileEntity?, pass: RenderPass?, tickProgression: Float) {
+            if (pass != RenderPass.NORMAL || tileEntity !is MovableDoorTileEntity?) return
+
+            if (!modelObjectReplaced) {
+                modelObjectReplaced = true
+                modelSet.modelObj = modelSet.modelObj.deepCopy(ModelObject::class.java, CustomModelObject())
+            }
+
+            render(
+                tileEntity,
+                modelSet,
+                tileEntity?.x?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerX.toFloat() } ?: 0.0F,
+                tileEntity?.y?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerY.toFloat() } ?: 0.0F,
+                tileEntity?.z?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerZ.toFloat() } ?: 0.0F,
+                tickProgression
+            )
         }
     }
 

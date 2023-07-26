@@ -25,7 +25,7 @@ object RendererRouter {
             "door_end_right", "door_end_left", "door_middle_right_front", "door_middle_left_front" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(MachinePartsRenderer::class.java, MovableDoorRenderer)
+                    renderer.deepCopy(MachinePartsRenderer::class.java, MovableDoorRenderer.RTMRenderer())
                 )
                 DoorModel(modelObject)
             }
@@ -33,7 +33,7 @@ object RendererRouter {
             "door_crew" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(MachinePartsRenderer::class.java, CrewDoorRenderer)
+                    renderer.deepCopy(MachinePartsRenderer::class.java, CrewDoorRenderer.RTMRenderer())
                 )
                 CrewDoorModel(modelObject)
             }
@@ -41,7 +41,7 @@ object RendererRouter {
             "door_controller" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(MachinePartsRenderer::class.java, ControllerRenderer)
+                    renderer.deepCopy(MachinePartsRenderer::class.java, ControllerRenderer.RTMRenderer())
                 )
                 ControllerModel(modelObject)
             }
@@ -49,7 +49,7 @@ object RendererRouter {
             "door_wall_1m", "door_wall_2m" -> {
                 replaceRenderer(
                     modelObject,
-                    renderer.deepCopy(MachinePartsRenderer::class.java, WallRenderer)
+                    renderer.deepCopy(MachinePartsRenderer::class.java, WallRenderer.RTMRenderer())
                 )
                 WallModel(modelObject)
             }
