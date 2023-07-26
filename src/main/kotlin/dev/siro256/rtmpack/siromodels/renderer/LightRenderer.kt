@@ -14,6 +14,7 @@ import dev.siro256.rtmpack.siromodels.block.ornament.TileEntityLight
 import dev.siro256.rtmpack.siromodels.deepCopy
 import dev.siro256.rtmpack.siromodels.model.ornament.LightModel
 import dev.siro256.rtmpack.siromodels.renderer.base.OrnamentRenderer
+import dev.siro256.rtmpack.siromodels.renderer.base.Renderer
 import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.OrnamentPartsRenderer
 import jp.ngt.rtm.render.RenderPass
@@ -111,7 +112,7 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
         }
     }
 
-    class RTMRenderer : OrnamentPartsRenderer() {
+    class RTMRenderer : OrnamentPartsRenderer(), Renderer {
         private var modelObjectReplaced = false
 
         override fun render(tileEntity: TileEntity?, pass: RenderPass?, tickProgression: Float) {

@@ -15,6 +15,7 @@ import dev.siro256.rtmpack.siromodels.deepCopy
 import dev.siro256.rtmpack.siromodels.model.platformdoor.CrewDoorModel
 import dev.siro256.rtmpack.siromodels.renderer.RenderDataManager
 import dev.siro256.rtmpack.siromodels.renderer.base.MachineRenderer
+import dev.siro256.rtmpack.siromodels.renderer.base.Renderer
 import jp.ngt.rtm.render.MachinePartsRenderer
 import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.RenderPass
@@ -81,7 +82,7 @@ object CrewDoorRenderer : MachineRenderer<CrewDoorTileEntity>() {
         }
     }
 
-    class RTMRenderer : MachinePartsRenderer() {
+    class RTMRenderer : MachinePartsRenderer(), Renderer {
         private var modelObjectReplaced = false
 
         override fun render(tileEntity: TileEntity?, pass: RenderPass?, tickProgression: Float) {
