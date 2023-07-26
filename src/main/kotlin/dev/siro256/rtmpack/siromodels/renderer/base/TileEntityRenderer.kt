@@ -3,8 +3,11 @@ package dev.siro256.rtmpack.siromodels.renderer.base
 import com.github.kotatsu_rtm.kotatsulib.mc1_12_2.api.gl.GLStateImpl
 import jp.ngt.rtm.modelpack.IResourceSelector
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.texture.SimpleTexture
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.ResourceLocation
 import org.joml.Matrix4f
 import org.joml.Matrix4fStack
 import org.joml.Vector2f
@@ -28,6 +31,15 @@ abstract class TileEntityRenderer<T>
             (brightness % 65536).toFloat() / 256.0F * 0.9375F + 0.03125F,
             (brightness / 65536).toFloat() / 256.0F * 0.9375F + 0.03125F
         )
+    }
+
+    fun getTextureId(textureLocation: ResourceLocation): Int {
+        val textureManager = Minecraft.getMinecraft().textureManager
+        @Suppress("UNNECESSARY_SAFE_CALL")
+        return textureManager.getTexture(textureLocation)?.glTextureId ?: run {
+            textureManager.loadTexture(textureLocation, SimpleTexture(textureLocation))
+            textureManager.getTexture(textureLocation).glTextureId
+        }
     }
 
     fun render(tileEntity: T?, modelSet: ModelSetBase<*>, x: Float, y: Float, z: Float, tickProgression: Float) {
