@@ -17,8 +17,6 @@ import dev.siro256.rtmpack.siromodels.renderer.base.OrnamentRenderer
 import jp.ngt.rtm.render.ModelObject
 import jp.ngt.rtm.render.OrnamentPartsRenderer
 import jp.ngt.rtm.render.RenderPass
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.texture.SimpleTexture
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
@@ -34,9 +32,7 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
         tileEntity: TileEntityLight?,
         modelName: String,
         tickProgression: Float,
-        modelMatrix: Matrix4f,
-        viewMatrix: Matrix4f,
-        projectionMatrix: Matrix4f,
+        modelMatrix: Matrix4f, viewMatrix: Matrix4f, projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f
     ) {
         val model = RenderDataManager.models[modelName] as LightModel
@@ -130,7 +126,7 @@ object LightRenderer : OrnamentRenderer<TileEntityLight>() {
 
             render(
                 tileEntity,
-                this.modelSet,
+                modelSet,
                 tileEntity?.x?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerX.toFloat() } ?: 0.0F,
                 tileEntity?.y?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerY.toFloat() } ?: 0.0F,
                 tileEntity?.z?.let { it.toFloat() - TileEntityRendererDispatcher.staticPlayerZ.toFloat() } ?: 0.0F,
