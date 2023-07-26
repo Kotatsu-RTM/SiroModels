@@ -5,8 +5,6 @@ import org.joml.Matrix4fStack
 import org.joml.Vector2f
 
 interface Renderer {
-    var currentTexture: Int
-
     fun Float.toRadians() = Math.toRadians(toDouble()).toFloat()
 
     fun Matrix4fStack.stack(block: () -> Unit) {
