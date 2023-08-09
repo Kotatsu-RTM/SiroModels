@@ -14,7 +14,7 @@ abstract class TileEntityRenderer<T> : Renderer
               T : IResourceSelector<*> {
     fun render(tileEntity: T?, modelSet: ModelSetBase<*>, x: Float, y: Float, z: Float, tickProgression: Float) {
         val modelName = modelSet.config.name
-        val modelMatrix = Matrix4f().mul(modelOffset(tileEntity, modelName)).translate(x, y, z)
+        val modelMatrix = Matrix4f().translate(x, y, z).mul(modelOffset(tileEntity, modelName))
         modelSet.config.offset.let { modelMatrix.translate(Vector3f(it)) }
         val viewMatrix = if (tileEntity != null) GLStateImpl.getView() else GLStateImpl.getModelViewMatrixFromGL()
         val projectionMatrix =
