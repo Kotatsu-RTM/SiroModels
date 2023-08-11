@@ -36,7 +36,7 @@ object ControllerRenderer : MachineRenderer<ControllerTileEntity>() {
         modelMatrix: Matrix4f, viewMatrix: Matrix4f, projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f
     ) {
-        val model = RenderDataManager.models[modelName] as ControllerModel
+        val model = RenderDataManager.models[modelName] as? ControllerModel ?: return //TODO Render error model
 
         TexturedShader
             .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)

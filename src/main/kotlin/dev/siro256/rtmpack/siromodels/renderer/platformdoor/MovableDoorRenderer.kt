@@ -47,7 +47,7 @@ object MovableDoorRenderer : MachineRenderer<MovableDoorTileEntity>() {
         modelMatrix: Matrix4f, viewMatrix: Matrix4f, projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f
     ) {
-        val model = RenderDataManager.models[modelName] as DoorModel
+        val model = RenderDataManager.models[modelName] as? DoorModel ?: return //TODO Render error model
         val nanoTime = System.nanoTime()
         val modelStack = Matrix4fStack(4).apply { set(modelMatrix) }
         val textureId = getTextureId(textureLocation)

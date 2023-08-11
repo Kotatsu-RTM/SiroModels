@@ -36,7 +36,7 @@ object CrewDoorRenderer : MachineRenderer<CrewDoorTileEntity>() {
         modelMatrix: Matrix4f, viewMatrix: Matrix4f, projectionMatrix: Matrix4f,
         lightMapCoords: Vector2f
     ) {
-        val model = RenderDataManager.models[modelName] as CrewDoorModel
+        val model = RenderDataManager.models[modelName] as? CrewDoorModel ?: return //TODO Render error model
 
         TexturedShader
             .setViewAndProjectionMatrix(viewMatrix, projectionMatrix)
